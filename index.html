@@ -586,26 +586,27 @@
 
 <script>
 function enviarPregunta() {
-    let input = document.getElementById('usuario_pregunta');
-    let texto = input.value;
+    let input = document.getElementById('pregunta'); // Asegúrate que tu input tenga este ID
+    let texto = input.value.trim();
+    
     if(texto === "") return;
 
-    let respuestasDiv = document.getElementById('respuestas');
-    respuestasDiv.innerHTML += `<div class="user-bubble" style="text-align:right; color:#ce9ab2;">${texto}</div>`;
+    let respuestasDiv = document.getElementById('responses'); // O 'respuestas' según tu HTML
+    
+    // 1. Mostrar la pregunta del usuario en pantalla
+    respuestasDiv.innerHTML += `<div class="user-bubble" style="text-align:right;"><b>Tú:</b> ${texto}</div>`;
 
-    let formData = new FormData();
-    formData.append('mensaje', texto);
+    // 2. LLAMADA LOCAL (Aquí es donde reemplazamos el fetch)
+    // Usamos la función responderChatbot que te pasé antes
+    let respuestaDelBot = responderChatbot(texto); 
 
-    fetch('api/chat.php', {
-        method: 'POST',
-        body: formData
-    })
-    .then(response => response.text())
-    .then(data => {
-        respuestasDiv.innerHTML += `<div class="bot-bubble"><b>Nova:</b> ${data}</div>`;
-        respuestasDiv.scrollTop = respuestasDiv.scrollHeight;
-        input.value = ""; // Limpia el cuadro
-    });
+    // 3. Mostrar la respuesta de Nova (el bot)
+    respuestasDiv.innerHTML += `<div class="bot-bubble"><b>Nova:</b> ${respuestaDelBot}</div>`;
+
+    // 4. Limpiar y hacer scroll
+    respuestasDiv.scrollTop = respuestasDiv.scrollHeight;
+    input.value = ""; 
 }
 </script>
+
 </html>
