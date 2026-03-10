@@ -1,41 +1,40 @@
-// Diccionario de conocimiento basado en tus imágenes
-const baseDeConocimiento = {
-    "envio": "Realizamos envíos a todo México. Si estás en Los Reyes, Veracruz, el tiempo de entrega es más rápido. ¿Te gustaría saber el costo para otra ciudad?",
-    "contacto": "Puedes contactarnos al teléfono 2721201331 o escribirnos a SKINCARE@GMAIL.COM. Estamos en Los Reyes, Veracruz.",
-    "limpiador": "Tenemos el 'Glucoside Foaming Cleanser' por $5.60. Es ideal para una limpieza profunda pero suave. ✨",
-    "niacinamida": "¡Claro! La Niacinamide 10% + Zinc 1% está en oferta a $5.70. Ayuda con las imperfecciones y el brillo.",
-    "hialuronico": "El Hyaluronic Acid 2% + B5 cuesta $3.20. Es perfecto para hidratar tu piel a profundidad.",
-    "ordinary": "Somos especialistas en The Ordinary. Tenemos sets como 'The Nightly Set', 'El Conjunto Diario' ($5.70) y 'El Conjunto Brillante' ($5.60).",
-    "ofertas": "¡Sí! Actualmente tenemos el Set de Ácido Glicólico con 13% de descuento a solo $4.60.",
-    "rutina": "Para una rutina básica te recomiendo: 1. Limpiador (Glucoside), 2. Hidratación (Ácido Hialurónico) y 3. Sellado (Natural Moisturizing Factors).",
-    "hola": "¡Hola, Bonita! ✨ ¿En qué puedo ayudarte hoy con tu rutina de skincare?",
-    "gracias": "¡De nada! Recuerda que tu piel se merece lo mejor. ¿Deseas consultar algo más?"
+// 1. El "cerebro" del bot con la info de tus fotos
+const baseDeDatosSkincare = {
+    "hola": "¡Hola, Bonita! ✨ ¿En qué puedo ayudarte con tu rutina de skincare hoy?",
+    "envio": "Hacemos envíos a todo México. Estamos en Los Reyes, Veracruz. 🚚",
+    "precio": "Tenemos productos desde $3.20 (Ácido Hialurónico) hasta sets completos. ¿Buscas algo específico?",
+    "ordinary": "Somos expertos en The Ordinary. Tenemos el Nightly Set, Daily Set y más. 🧴",
+    "limpiador": "El Glucoside Foaming Cleanser cuesta $5.60 y es súper suave con la piel.",
+    "gracias": "¡De nada! Recuerda que tu piel se merece lo mejor. ✨",
+    "contacto": "Escríbenos a SKINCARE@GMAIL.COM o llámanos al 2721201331."
 };
 
-// Función para procesar la respuesta
-function responderChatbot(pregunta) {
-    const p = pregunta.toLowerCase();
-    let respuesta = "Lo siento, todavía estoy aprendiendo. 🌸 Pero puedes contactarnos al 2721201331 para una atención personalizada.";
+// 2. La función que hace la magia
+function enviarPregunta() {
+    let input = document.querySelector('input[type="text"]') || document.getElementById('pregunta'); 
+    let texto = input.value.toLowerCase().trim();
+    let respuestasDiv = document.getElementById('respuestas'); // Asegúrate que tu div de chat tenga este ID
 
-    // Buscar palabras clave en la pregunta
-    for (let clave in baseDeConocimiento) {
-        if (p.includes(clave)) {
-            respuesta = baseDeConocimiento[clave];
+    if (texto === "") return;
+
+    // Mostrar lo que escribió el usuario
+    respuestasDiv.innerHTML += `<div style="text-align:right; margin: 10px; color: #d48e9d;"><b>Tú:</b> ${input.value}</div>`;
+
+    // Buscar respuesta en nuestra base de datos local
+    let respuestaBot = "Lo siento, Bonita. No entendí eso, pero puedes preguntarme por envíos, precios o productos de The Ordinary. ✨";
+    
+    for (let clave in baseDeDatosSkincare) {
+        if (texto.includes(clave)) {
+            respuestaBot = baseDeDatosSkincare[clave];
             break;
         }
     }
-    
-    return respuesta;
-}
 
-// Lógica para conectar con tu HTML (suponiendo que tu botón es 'Enviar' y el input es 'pregunta')
-document.querySelector(".boton-enviar").addEventListener("click", () => {
-    const input = document.querySelector(".input-chat");
-    const textoUsuario = input.value;
-    
-    if(textoUsuario !== "") {
-        const respuestaIA = responderChatbot(textoUsuario);
-        mostrarEnPantalla(respuestaIA); // Aquí llamas a la función que dibuja el mensaje
-        input.value = "";
-    }
-});
+    // Mostrar respuesta de Nova
+    setTimeout(() => {
+        respuestasDiv.innerHTML += `<div style="text-align:left; margin: 10px; color: #555;"><b>Nova:</b> ${respuestaBot}</div>`;
+        respuestasDiv.scrollTop = respuestasDiv.scrollHeight; // Auto-scroll hacia abajo
+    }, 400); // Pequeño retraso para que parezca que piensa
+
+    input.value = ""; // Limpiar el cuadro
+}
